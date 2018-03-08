@@ -1,0 +1,51 @@
+package learn.java.maxSub;
+/**
+ * 最大序列和
+ * @author Administrator
+ *
+ */
+public class Caulate {
+	
+	public static void main(String[] args){
+		int[] a = {1,-4,-2,3,10,-6,5,4};
+		System.out.println(maxSubSum1(a));
+		System.out.println(maxSubSum2(a));
+	}
+	/**
+	 * 穷举法，算出每个子序列的和，即算出序列中第i个到第j个数的和(j>=i)，并进行比较，运行耗时：O(N^3)
+	 * @param a
+	 * @return
+	 */
+	public static int maxSubSum1(int[] a) {
+		int maxSum = 0;
+		int sum;
+		for (int i = 0; i < a.length; i++) {
+			for (int j = i; j < a.length; j++) {
+				sum = 0;
+				for (int k = i; k <= j; k++) {
+					sum += a[k];// 计算a[i]到a[j]的和
+				}
+				if (sum > maxSum) {
+					maxSum = sum;
+				}
+			}
+		}
+		return maxSum;
+	}
+	
+	public static int maxSubSum2(int[] a) {
+		int maxSum = 0;
+		int sum;
+		for (int i = 0; i < a.length; i++) {
+			sum = 0;
+			for (int j = i; j < a.length; j++) {
+				sum += a[j];
+				if (sum > maxSum) {
+					maxSum = sum;
+				}
+			}
+		}
+		return maxSum;
+	}
+	
+}

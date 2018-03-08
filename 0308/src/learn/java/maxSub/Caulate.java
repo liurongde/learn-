@@ -1,0 +1,126 @@
+package learn.java.maxSub;
+
+/**
+ * 最大序列和
+ * 
+ * @author Administrator
+ *
+ */
+public class Caulate {
+
+	public static void main(String[] args) {
+		int[] a = { 1, -4, -2, 3, 10, -6, 5, 4 };
+//		int[] a = {-2, 11,-4,13,-5,-2};
+		
+		System.out.println(maxSubSum1(a));
+		System.out.println(maxSubSum2(a));
+		System.out.println(maxSubSum3(a, 0,a.length-1));
+		System.out.println(maxSubSum4(a));
+	}
+
+	/**
+	 * 穷举法，算出每个子序列的和，即算出序列中第i个到第j个数的和(j>=i)，并进行比较，运行耗时：O(N^3)
+	 * 
+	 * @param a
+	 * @return
+	 */
+	public static int maxSubSum1(int[] a) {
+		int maxSum = 0;
+		int sum;
+		for (int i = 0; i < a.length; i++) {
+			for (int j = i; j < a.length; j++) {
+				sum = 0;
+				for (int k = i; k <= j; k++) {
+					sum += a[k];// 计算a[i]到a[j]的和
+				}
+				if (sum > maxSum) {
+					maxSum = sum;
+				}
+			}
+		}
+		return maxSum;
+	}
+
+	/**
+	 * 第一个算法的第三个for循环中有大量不必要的重复计算，如：计算i到j的和，然而i到j-1的和在前一次的循环中已经计算过，无需重复计算，故该for循环可以去掉,运行耗时：O(N^2)
+	 * 
+	 * @param a
+	 * @return
+	 */
+	public static int maxSubSum2(int[] a) {
+		int maxSum = 0;
+		int sum;
+		for (int i = 0; i < a.length; i++) {
+			sum = 0;
+			for (int j = i; j < a.length; j++) {
+				sum += a[j];
+				if (sum > maxSum) {
+					maxSum = sum;
+				}
+			}
+		}
+		return maxSum;
+	}
+	
+	/**
+	 * 把问题分成两个大致相等的子问题，然后递归地对它们求解，这是“分”的部分。“治”阶段将两个子问题的解修补到一起并可能再做些少量的附加工作，最后得到整个问题的解 ， 运行耗时：O(N*logN)
+	 * @param a 处理数组
+	 * @param left 左边界
+	 * @param right 右边界
+	 * @return
+	 */
+	public static int maxSubSum3(int[] a, int left, int right) {
+		if (left == right) {
+			if (a[left] > 0) {
+				return a[left];
+			} else {
+				return 0;
+			}
+		}
+
+		int center = (left + right) / 2;
+		int maxLeftSum = maxSubSum3(a, left, center);
+		int maxRightSum = maxSubSum3(a, center + 1, right);
+
+		int maxLeftBorderSum = 0, leftBorderSum = 0;
+		for (int i = center; i >= left; i--) {
+			leftBorderSum += a[i];
+			if (leftBorderSum > maxLeftBorderSum) {
+				maxLeftBorderSum = leftBorderSum;
+			}
+		}
+
+		int maxRightBorderSum = 0, rightBorderSum = 0;
+		for (int i = center + 1; i <= right; i++) {
+			rightBorderSum += a[i];
+			if (rightBorderSum > maxRightBorderSum) {
+				maxRightBorderSum = rightBorderSum;
+			}
+		}
+
+		int maxBorderSum = maxLeftBorderSum + maxRightBorderSum;
+		return maxBorderSum > maxLeftSum ? maxBorderSum > maxRightSum ? maxBorderSum : maxRightSum
+				: maxLeftSum > maxRightSum ? maxLeftSum : maxRightSum;
+	}
+	
+	
+	/**
+	 * 最优起点
+	 * 设a[i]为和最大序列的起点，则如果a[i]是负的，那么它不可能代表最优序列的起点，因为任何包含a[i]作为起点的子序列都可以通过a[i+1]作起点而得到改进。
+	 * 任何负的子序列也不可能是最优子序列的前缀。运行耗时：O(N)
+	 * @param a
+	 * @return
+	 */
+	public static int maxSubSum4(int[] a){
+		int maxSum=0,sum=0;
+		for(int i=0;i<a.length;i++){
+			sum+=a[i];
+			if(sum>maxSum){
+				maxSum=sum;
+			}else if(sum<0){
+				sum=0;
+			}
+		}
+		return maxSum;
+	}
+}
